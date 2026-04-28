@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CS Launch Pad</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+:root {
+  --bg: #070711;
+  --s1: #0e0e1a;
+  --s2: #141426;
+  --s3: #1a1a32;
+  --border: #1e1e38;
+  --text: #e0e0ff;
+  --muted: #5a5a88;
+  --accent: #6366f1;
+  --accent2: #818cf8;
+  --green: #22c55e;
+  --orange: #f97316;
+  --pink: #ec4899;
+  --yellow: #eab308;
+  --cyan: #06b6d4;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Space Grotesk', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(ellipse at 10% 10%, rgba(99,102,241,0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 90% 90%, rgba(6,182,212,0.05) 0%, transparent 50%);
+  pointer-events: none; z-index: 0;
+}
+
+.app { max-width: 720px; margin: 0 auto; padding: 24px 14px 60px; position: relative; z-index: 1; }
+
+/* ── Nav Tabs ── */
+.nav {
+  display: flex;
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 5px;
+  gap: 5px;
+  margin-bottom: 24px;
+}
+
+.nav-btn {
+  flex: 1; padding: 11px 6px;
+  border-radius: 10px; border: none;
+  background: transparent; color: var(--muted);
+  cursor: pointer;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px; font-weight: 600;
+  text-align: center; transition: all 0.25s;
+  line-height: 1.3;
+}
+
+.nav-btn .nav-icon { font-size: 18px; display: block; margin-bottom: 3px; }
+.nav-btn.active { background: var(--accent); color: #fff; }
+
+/* ── Sections ── */
+.section { display: none; animation: fadeUp 0.3s ease; }
+.section.active { display: block; }
+
+/* ── Header ── */
+.page-header { margin-bottom: 22px; }
+.page-header h2 {
+  font-size: 26px; font-weight: 700;
+  background: linear-gradient(135deg, var(--accent2), var(--cyan));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 4px;
+}
+.page-header p { color: var(--muted); font-size: 13px; }
+
+/* ── Cards ── */
+.card {
+  background: var(--s1); border: 1px solid var(--border);
+  border-radius: 14px; padding: 18px; margin-bottom: 14px;
+}
+
+/* ── Daily Tracker ── */
+.date-display {
+  background: var(--s2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 16px 20px; margin-bottom: 16px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+
+.date-left .date-day { font-size: 28px; font-weight: 700; color: var(--accent2); }
+.date-left .date-full { font-size: 13px; color: var(--muted); margin-top: 2px; }
+.streak-box { text-align: center; }
+.streak-num { font-size: 28px; font-weight: 700; color: var(--orange); }
+.streak-label { font-size: 11px; color: var(--muted); }
+
+.section-label {
+  font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 10px; margin-top: 4px;
+}
+
+/* Habit Grid */
+.habit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+
+.habit-item {
+  background: var(--s2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 12px 14px;
+  display: flex; align-items: center; gap: 10px;
+  cursor: pointer; transition: all 0.2s; user-select: none;
+}
+
+.habit-item.done { border-color: transparent; }
+.habit-icon { font-size: 20px; flex-shrink: 0; }
+.habit-name { font-size: 13px; font-weight: 600; color: var(--text); }
+.habit-check {
+  margin-left: auto; width: 20px; height: 20px;
+  border-radius: 6px; border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; color: #fff; transition: all 0.2s; flex-shrink: 0;
+}
+
+/* Study Timer */
+.timer-card {
+  background: var(--s2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 20px; margin-bottom: 14px; text-align: center;
+}
+
+.timer-display {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 48px; font-weight: 600;
+  color: var(--accent2); margin: 10px 0;
+  letter-spacing: 2px;
+}
+
+.timer-btns { display: flex; gap: 8px; justify-content: center; margin-top: 12px; }
+
+.timer-btn {
+  padding: 10px 22px; border-radius: 100px;
+  border: none; cursor: pointer;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px; font-weight: 600; transition: all 0.2s;
+}
+
+.timer-btn.primary { background: var(--accent); color: #fff; }
+.timer-btn.secondary { background: var(--s3); color: var(--text); border: 1px solid var(--border); }
+
+.timer-sessions { font-size: 13px; color: var(--muted); margin-top: 10px; }
+.timer-total { font-size: 13px; color: var(--green); font-weight: 600; }
+
+/* Today's Tasks */
+.task-input-row { display: flex; gap: 8px; margin-bottom: 12px; }
+
+.task-input {
+  flex: 1; background: var(--s2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 10px 14px; color: var(--text);
+  font-family: 'Space Grotesk', sans-serif; font-size: 14px; outline: none;
+  transition: border-color 0.2s;
+}
+
+.task-input:focus { border-color: var(--accent); }
+.task-input::placeholder { color: var(--muted); }
+
+.add-btn {
+  padding: 10px 16px; background: var(--accent); color: #fff;
+  border: none; border-radius: 10px; cursor: pointer;
+  font-size: 18px; transition: opacity 0.2s; flex-shrink: 0;
+}
+
+.task-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 10px;
+  background: var(--s2); border: 1px solid var(--border);
+  margin-bottom: 8px; transition: all 0.2s;
+}
+
+.task-cb {
+  width: 20px; height: 20px; border-radius: 6px;
+  border: 2px solid var(--border); flex-shrink: 0;
+  cursor: pointer; display: flex; align-items: center;
+  justify-content: center; font-size: 12px; color: #fff;
+  transition: all 0.2s;
+}
+
+.task-txt { flex: 1; font-size: 14px; cursor: pointer; }
+.task-row.done .task-txt { text-decoration: line-through; color: var(--muted); }
+
+.del-btn {
+  background: none; border: none; color: var(--muted);
+  cursor: pointer; font-size: 16px; padding: 2px 6px;
+  transition: color 0.2s; flex-shrink: 0;
+}
+.del-btn:hover { color: #ef4444; }
+
+/* ── Roadmap ── */
+.phase-tabs {
+  display: flex; gap: 6px; margin-bottom: 18px;
+  overflow-x: auto; padding-bottom: 4px;
+}
+
+.phase-tab {
+  padding: 8px 14px; border-radius: 100px;
+  border: 1px solid var(--border); background: var(--s1);
+  color: var(--muted); cursor: pointer; white-space: nowrap;
+  font-family: 'Space Grotesk', sans-serif; font-size: 12px;
+  font-weight: 600; transition: all 0.2s;
+}
+
+.phase-tab.active { color: #fff; border-color: transparent; }
+
+.phase-header {
+  border-radius: 14px; padding: 18px; margin-bottom: 16px; text-align: center;
+}
+
+.phase-title {
+  font-size: 22px; font-weight: 700; margin-bottom: 4px;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.phase-sub { font-size: 13px; color: var(--muted); }
+
+.topic-card {
+  background: var(--s1); border: 1px solid var(--border);
+  border-radius: 14px; margin-bottom: 10px; overflow: hidden;
+}
+
+.topic-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px; cursor: pointer; user-select: none;
+}
+
+.topic-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0; background: var(--s2);
+  transition: background 0.3s;
+}
+
+.topic-info { flex: 1; }
+.topic-tag { font-size: 11px; font-weight: 600; margin-bottom: 2px; }
+.topic-name { font-size: 15px; font-weight: 600; color: var(--text); }
+
+.topic-badge {
+  font-size: 11px; padding: 3px 10px; border-radius: 100px;
+  font-weight: 600; flex-shrink: 0;
+}
+
+.topic-body { display: none; padding: 0 16px 16px; }
+.topic-card.open .topic-body { display: block; animation: fadeDown 0.25s ease; }
+.topic-card.open .topic-header-chevron { transform: rotate(180deg); }
+
+.topic-header-chevron { font-size: 10px; color: var(--muted); transition: transform 0.3s; }
+
+.resource-list { display: flex; flex-direction: column; gap: 8px; margin-top: 2px; }
+
+.resource-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 12px; border-radius: 10px;
+  background: var(--s2); border: 1px solid var(--border);
+  cursor: pointer; transition: all 0.2s; user-select: none;
+}
+
+.resource-item.done { opacity: 0.6; }
+
+.res-cb {
+  width: 18px; height: 18px; border-radius: 5px;
+  border: 2px solid var(--border); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; color: #fff; transition: all 0.2s; margin-top: 1px;
+}
+
+.res-content { flex: 1; }
+.res-name { font-size: 13px; font-weight: 600; color: var(--text); }
+.res-detail { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+.res-type {
+  font-size: 10px; font-weight: 600; padding: 2px 8px;
+  border-radius: 100px; flex-shrink: 0; margin-top: 2px;
+}
+
+/* ── Skills ── */
+.skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+
+.skill-card {
+  background: var(--s1); border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px;
+}
+
+.skill-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.skill-name { font-size: 13px; font-weight: 600; }
+.skill-pct { font-size: 13px; font-weight: 700; }
+
+.skill-bar-bg { background: var(--s2); border-radius: 100px; height: 6px; overflow: hidden; }
+.skill-bar-fill { height: 100%; border-radius: 100px; transition: width 0.6s ease; }
+
+/* ── Stats ── */
+.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+
+.stat-card {
+  background: var(--s1); border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px; text-align: center;
+}
+
+.stat-num { font-size: 26px; font-weight: 700; }
+.stat-label { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+/* ── Animations ── */
+@keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+@keyframes fadeDown { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
+
+/* ── Reset ── */
+.small-btn {
+  background: none; border: 1px solid var(--border);
+  color: var(--muted); font-size: 12px; padding: 5px 12px;
+  border-radius: 100px; cursor: pointer;
+  font-family: 'Space Grotesk', sans-serif; transition: all 0.2s;
+}
+.small-btn:hover { border-color: var(--accent); color: var(--accent2); }
+
+.empty-msg { color: var(--muted); font-size: 13px; text-align: center; padding: 16px; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- Nav -->
+  <div class="nav">
+    <button class="nav-btn active" onclick="showSection('tracker')">
+      <span class="nav-icon">📅</span>Daily
+    </button>
+    <button class="nav-btn" onclick="showSection('roadmap')">
+      <span class="nav-icon">🗺️</span>Roadmap
+    </button>
+    <button class="nav-btn" onclick="showSection('skills')">
+      <span class="nav-icon">⚡</span>Skills
+    </button>
+    <button class="nav-btn" onclick="showSection('stats')">
+      <span class="nav-icon">📊</span>Stats
+    </button>
+  </div>
+
+  <!-- ═══════════════════════════ DAILY TRACKER ═══════════════════════════ -->
+  <div class="section active" id="sec-tracker">
+    <div class="page-header">
+      <h2>Daily Tracker</h2>
+      <p>Build the habits that build the startup 🚀</p>
+    </div>
+
+    <!-- Date + Streak -->
+    <div class="date-display">
+      <div class="date-left">
+        <div class="date-day" id="day-name"></div>
+        <div class="date-full" id="date-full"></div>
+      </div>
+      <div class="streak-box">
+        <div class="streak-num" id="streak-num">0</div>
+        <div class="streak-label">🔥 Day Streak</div>
+      </div>
+    </div>
+
+    <!-- Habits -->
+    <div class="section-label">Daily Habits</div>
+    <div class="habit-grid" id="habit-grid"></div>
+
+    <!-- Study Timer -->
+    <div class="section-label">Focus Timer</div>
+    <div class="timer-card">
+      <div style="font-size:13px; color:var(--muted)" id="timer-session-label">25 min focus session</div>
+      <div class="timer-display" id="timer-display">25:00</div>
+      <div class="timer-sessions" id="timer-info">Sessions today: <span id="session-count">0</span> &nbsp;|&nbsp; <span class="timer-total" id="total-mins">0 min focused</span></div>
+      <div class="timer-btns">
+        <button class="timer-btn primary" id="timer-start-btn" onclick="timerToggle()">▶ Start</button>
+        <button class="timer-btn secondary" onclick="timerReset()">↺ Reset</button>
+        <button class="timer-btn secondary" onclick="timerSetMode()">⚙ Mode</button>
+      </div>
+    </div>
+
+    <!-- Today's Tasks -->
+    <div class="section-label">Today's Tasks</div>
+    <div class="task-input-row">
+      <input class="task-input" id="task-input" placeholder="Add a task for today..." onkeydown="if(event.key==='Enter')addTask()">
+      <button class="add-btn" onclick="addTask()">+</button>
+    </div>
+    <div id="today-tasks"></div>
+    <div style="text-align:center; margin-top:8px">
+      <button class="small-btn" onclick="clearDoneTasks()">Clear completed</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════ ROADMAP ═══════════════════════════ -->
+  <div class="section" id="sec-roadmap">
+    <div class="page-header">
+      <h2>CS Roadmap</h2>
+      <p>1st Year → Startup Builder in 12 months 🏗️</p>
+    </div>
+
+    <div class="phase-tabs" id="phase-tabs"></div>
+    <div class="phase-header" id="phase-header"></div>
+    <div id="topics-list"></div>
+  </div>
+
+  <!-- ═══════════════════════════ SKILLS ═══════════════════════════ -->
+  <div class="section" id="sec-skills">
+    <div class="page-header">
+      <h2>Skill Tracker</h2>
+      <p>Rate yourself honestly — track your growth 📈</p>
+    </div>
+    <div class="skills-grid" id="skills-grid"></div>
+    <div style="text-align:center">
+      <button class="small-btn" onclick="renderSkills()">Refresh</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════ STATS ═══════════════════════════ -->
+  <div class="section" id="sec-stats">
+    <div class="page-header">
+      <h2>Your Stats</h2>
+      <p>Every session counts 💪</p>
+    </div>
+
+    <div class="stats-grid" id="stats-grid"></div>
+
+    <div class="section-label">Roadmap Progress</div>
+    <div class="card" id="roadmap-progress-card"></div>
+
+    <div class="section-label" style="margin-top:14px">Weekly Habit Score</div>
+    <div class="card" id="habit-score-card"></div>
+
+    <div style="text-align:center; margin-top:16px">
+      <button class="small-btn" onclick="resetAll()">Reset All Data</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ═══════════════════ DATA ═══════════════════
+
+const HABITS = [
+  { id:'code',    icon:'💻', name:'Coded today',     color:'#6366f1' },
+  { id:'exercise',icon:'🏃', name:'Exercised',        color:'#22c55e' },
+  { id:'nothc',   icon:'🌿', name:'No THC',           color:'#a3e635' },
+  { id:'noporn',  icon:'🧠', name:'No Porn',          color:'#06b6d4' },
+  { id:'read',    icon:'📚', name:'Read/Learned',     color:'#f97316' },
+  { id:'notwaste',icon:'⏰', name:'No time wasted',   color:'#ec4899' },
+];
+
+const PHASES = [
+  {
+    id: 'p1', label: 'Phase 1', title: 'Foundations', subtitle: 'Month 1–3 · Learn the basics', color: '#6366f1',
+    topics: [
+      {
+        icon:'🐍', tag:'Language', name:'Python Fundamentals', difficulty:'Beginner',
+        resources:[
+          {name:'Python for Everybody (freeCodeCamp)', detail:'Full beginner course on YouTube — 4 hrs', type:'Video'},
+          {name:'CS50P – Harvard Python Course', detail:'Free on edX — highly recommended', type:'Course'},
+          {name:'Automate the Boring Stuff (book)', detail:'Free online — practical projects', type:'Book'},
+          {name:'Build: Number guessing game', detail:'Apply what you learn immediately', type:'Project'},
+        ]
+      },
+      {
+        icon:'🔧', tag:'Tools', name:'Git & GitHub', difficulty:'Beginner',
+        resources:[
+          {name:'Git in 1 Hour (YouTube)', detail:'The Coding Train or Traversy Media', type:'Video'},
+          {name:'Create your GitHub profile', detail:'This is your resume — make it good', type:'Task'},
+          {name:'Push your first project to GitHub', detail:'Even small projects — just push it', type:'Task'},
+        ]
+      },
+      {
+        icon:'🌐', tag:'Web Basics', name:'HTML & CSS', difficulty:'Beginner',
+        resources:[
+          {name:'freeCodeCamp HTML & CSS', detail:'Free, interactive, beginner-friendly', type:'Course'},
+          {name:'Build: Your personal portfolio page', detail:'Put your name and skills on the web', type:'Project'},
+          {name:'Kevin Powell CSS (YouTube)', detail:'Best CSS teacher on YouTube', type:'Video'},
+        ]
+      },
+      {
+        icon:'🧩', tag:'Thinking', name:'Problem Solving Mindset', difficulty:'Foundation',
+        resources:[
+          {name:'Start Leetcode — Easy problems only', detail:'5 problems per week. Consistency beats intensity.', type:'Practice'},
+          {name:'Think Like a Programmer (book)', detail:'Teaches you HOW to approach problems', type:'Book'},
+          {name:'HackerRank 30 Days of Code', detail:'Great daily challenge habit', type:'Practice'},
+        ]
+      },
+    ]
+  },
+  {
+    id: 'p2', label: 'Phase 2', title: 'Build Stack', subtitle: 'Month 4–6 · Learn to build real things', color: '#06b6d4',
+    topics: [
+      {
+        icon:'⚛️', tag:'Frontend', name:'JavaScript + React', difficulty:'Intermediate',
+        resources:[
+          {name:'JavaScript30 by Wes Bos', detail:'Free — 30 projects in 30 days. Incredible.', type:'Course'},
+          {name:'React Official Docs (react.dev)', detail:'New docs are beginner-friendly', type:'Docs'},
+          {name:'Build: A todo app in React', detail:'Classic first React project', type:'Project'},
+          {name:'Build: A weather app using API', detail:'Fetches real data — impressive to show', type:'Project'},
+        ]
+      },
+      {
+        icon:'🛠️', tag:'Backend', name:'Node.js + Express Basics', difficulty:'Intermediate',
+        resources:[
+          {name:'Node.js Crash Course (Traversy Media)', detail:'YouTube — free, 90 min', type:'Video'},
+          {name:'Build a REST API with Express', detail:'Core startup backend skill', type:'Project'},
+          {name:'Learn what APIs are and how they work', detail:'Read: restfulapi.net', type:'Reading'},
+        ]
+      },
+      {
+        icon:'🗄️', tag:'Database', name:'SQL & MongoDB Basics', difficulty:'Intermediate',
+        resources:[
+          {name:'SQLZoo — free interactive SQL', detail:'Learn SQL by writing it', type:'Practice'},
+          {name:'MongoDB University (free)', detail:'Official free course from MongoDB', type:'Course'},
+          {name:'Connect a database to your Express API', detail:'Build something full-stack', type:'Project'},
+        ]
+      },
+      {
+        icon:'🚀', tag:'Deploy', name:'Deployment & Hosting', difficulty:'Intermediate',
+        resources:[
+          {name:'Deploy to Vercel (frontend)', detail:'Free, easiest deployment platform', type:'Task'},
+          {name:'Deploy backend to Render or Railway', detail:'Free tiers — get your API live', type:'Task'},
+          {name:'Buy a domain (optional)', detail:'~$10/year — makes portfolio look serious', type:'Optional'},
+        ]
+      },
+    ]
+  },
+  {
+    id: 'p3', label: 'Phase 3', title: 'First Project', subtitle: 'Month 7–9 · Build something real', color: '#22c55e',
+    topics: [
+      {
+        icon:'💡', tag:'Ideation', name:'Find Your First Idea', difficulty:'Creative',
+        resources:[
+          {name:'Solve a problem YOU have', detail:'Best ideas come from personal pain points', type:'Thinking'},
+          {name:'Read: The Mom Test (book)', detail:'Teaches you to validate ideas before building', type:'Book'},
+          {name:'Browse Product Hunt for inspiration', detail:'See what people are building', type:'Research'},
+          {name:'Write a 1-page project brief', detail:'What it does, who it is for, why it matters', type:'Task'},
+        ]
+      },
+      {
+        icon:'🏗️', tag:'Build', name:'Build Your MVP', difficulty:'Intermediate',
+        resources:[
+          {name:'MVP = Minimum Viable Product', detail:'Build the smallest version that works', type:'Concept'},
+          {name:'Use React + Node + MongoDB stack', detail:'You already know this from Phase 2', type:'Task'},
+          {name:'Ship within 30 days', detail:'Done > perfect. Ship it.', type:'Rule'},
+          {name:'Get 5 real people to use it', detail:'Friends, family — real feedback matters', type:'Task'},
+        ]
+      },
+      {
+        icon:'🎨', tag:'Design', name:'UI/UX Basics', difficulty:'Beginner',
+        resources:[
+          {name:'Refactoring UI (book/articles)', detail:'Best design resource for developers', type:'Book'},
+          {name:'Figma — free design tool', detail:'Learn basics: figma.com — free tutorials', type:'Tool'},
+          {name:'Copy good designs first', detail:'Recreate an app you admire — learn by copying', type:'Practice'},
+        ]
+      },
+      {
+        icon:'📣', tag:'Launch', name:'Launch & Get Users', difficulty:'Startup',
+        resources:[
+          {name:'Post on Product Hunt', detail:'Free launch platform — huge exposure', type:'Task'},
+          {name:'Share on LinkedIn and Twitter/X', detail:'Build in public — document your journey', type:'Task'},
+          {name:'Post in relevant Reddit communities', detail:'r/webdev, r/startups, niche subreddits', type:'Task'},
+          {name:'Collect feedback from 10 users', detail:'DM people directly. Ask what they think.', type:'Task'},
+        ]
+      },
+    ]
+  },
+  {
+    id: 'p4', label: 'Phase 4', title: 'Startup Mode', subtitle: 'Month 10–12 · Think like a founder', color: '#f97316',
+    topics: [
+      {
+        icon:'🧠', tag:'Mindset', name:'Founder Thinking', difficulty:'Advanced',
+        resources:[
+          {name:'Read: Zero to One by Peter Thiel', detail:'Most important startup book', type:'Book'},
+          {name:'Watch: How to Start a Startup (YC)', detail:'Free lecture series on YouTube', type:'Video'},
+          {name:'Follow YC blog (ycombinator.com/blog)', detail:'Best startup writing on the internet', type:'Reading'},
+          {name:'Write your startup thesis — 1 page', detail:'What do you want to build and why?', type:'Task'},
+        ]
+      },
+      {
+        icon:'📈', tag:'Growth', name:'Growth & Marketing Basics', difficulty:'Intermediate',
+        resources:[
+          {name:'Growth Hacking basics (Neil Patel blog)', detail:'Free, practical marketing content', type:'Reading'},
+          {name:'Learn Google Analytics basics', detail:'Understand your users with data', type:'Tool'},
+          {name:'Build in public on Twitter/X or LinkedIn', detail:'Document your journey — attracts users', type:'Strategy'},
+        ]
+      },
+      {
+        icon:'🤝', tag:'Network', name:'Build Your Network', difficulty:'Social',
+        resources:[
+          {name:'Join a hackathon', detail:'Devfolio.co lists Indian hackathons — go compete', type:'Event'},
+          {name:'Find a technical co-founder or mentor', detail:'LinkedIn + college seniors + communities', type:'Task'},
+          {name:'Join developer communities', detail:'Discord servers, local meetups, college clubs', type:'Community'},
+          {name:'Apply to internships by end of Year 1', detail:'Even small startups — experience > brand', type:'Goal'},
+        ]
+      },
+      {
+        icon:'💰', tag:'Money', name:'Monetization Basics', difficulty:'Advanced',
+        resources:[
+          {name:'Learn about SaaS business models', detail:'Subscription, freemium, marketplace', type:'Concept'},
+          {name:'Stripe integration basics', detail:'How to accept payments in your app', type:'Technical'},
+          {name:'Read: Indie Hackers (indiehackers.com)', detail:'Real founders sharing revenue and lessons', type:'Community'},
+        ]
+      },
+    ]
+  },
+];
+
+const SKILLS = [
+  { id:'python',   name:'Python',        color:'#6366f1' },
+  { id:'js',       name:'JavaScript',    color:'#eab308' },
+  { id:'react',    name:'React',         color:'#06b6d4' },
+  { id:'git',      name:'Git/GitHub',    color:'#f97316' },
+  { id:'sql',      name:'SQL/Databases', color:'#22c55e' },
+  { id:'css',      name:'HTML/CSS',      color:'#ec4899' },
+  { id:'node',     name:'Node.js',       color:'#84cc16' },
+  { id:'dsa',      name:'DSA / Algos',   color:'#a855f7' },
+  { id:'design',   name:'UI/UX Design',  color:'#f43f5e' },
+  { id:'product',  name:'Product Think', color:'#14b8a6' },
+];
+
+// ═══════════════════ STATE ═══════════════════
+
+const KEY = 'cslaunchpad_v1';
+let S = {
+  habits: {},          // { 'YYYY-MM-DD': { habitId: bool } }
+  tasks: {},           // { 'YYYY-MM-DD': [ {id, text, done} ] }
+  roadmap: {},         // { resourceKey: bool }
+  skills: {},          // { skillId: 0-100 }
+  timer: { sessions: 0, totalMins: 0, date: '' },
+  activePhase: 0,
+  streak: 0,
+  lastActiveDate: '',
+  openTopic: null,
+};
+
+function load() {
+  try { const d = localStorage.getItem(KEY); if(d) S = JSON.parse(d); } catch(e) {}
+}
+
+function save() { localStorage.setItem(KEY, JSON.stringify(S)); }
+
+// ═══════════════════ HELPERS ═══════════════════
+
+function today() {
+  return new Date().toISOString().slice(0,10);
+}
+
+function todayHabits() {
+  if (!S.habits[today()]) S.habits[today()] = {};
+  return S.habits[today()];
+}
+
+function todayTasks() {
+  if (!S.tasks[today()]) S.tasks[today()] = [];
+  return S.tasks[today()];
+}
+
+// ═══════════════════ NAV ═══════════════════
+
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  if (id === 'skills') renderSkills();
+  if (id === 'stats')  renderStats();
+}
+
+// ═══════════════════ STREAK ═══════════════════
+
+function calcStreak() {
+  let streak = 0;
+  let d = new Date();
+  for (let i = 0; i < 365; i++) {
+    const key = d.toISOString().slice(0,10);
+    const h = S.habits[key] || {};
+    const done = Object.values(h).filter(Boolean).length;
+    if (done >= 3) { streak++; d.setDate(d.getDate()-1); }
+    else { if(i > 0) break; d.setDate(d.getDate()-1); }
+  }
+  return streak;
+}
+
+// ═══════════════════ DAILY TRACKER ═══════════════════
+
+function renderTracker() {
+  const now = new Date();
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('day-name').textContent = days[now.getDay()];
+  document.getElementById('date-full').textContent = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+  document.getElementById('streak-num').textContent = calcStreak();
+  renderHabits();
+  renderTasks();
+  renderTimerUI();
+}
+
+function renderHabits() {
+  const h = todayHabits();
+  const grid = document.getElementById('habit-grid');
+  grid.innerHTML = '';
+  HABITS.forEach(hab => {
+    const done = h[hab.id] || false;
+    const el = document.createElement('div');
+    el.className = 'habit-item' + (done ? ' done' : '');
+    if (done) el.style.background = hab.color + '22';
+    if (done) el.style.borderColor = hab.color + '55';
+    el.innerHTML = `
+      <div class="habit-icon">${hab.icon}</div>
+      <div class="habit-name">${hab.name}</div>
+      <div class="habit-check" style="${done ? `background:${hab.color}; border-color:${hab.color}` : ''}">
+        ${done ? '✓' : ''}
+      </div>
+    `;
+    el.onclick = () => {
+      todayHabits()[hab.id] = !todayHabits()[hab.id];
+      save(); renderHabits();
+      document.getElementById('streak-num').textContent = calcStreak();
+    };
+    grid.appendChild(el);
+  });
+}
+
+// ═══════════════════ TASKS ═══════════════════
+
+function renderTasks() {
+  const tasks = todayTasks();
+  const el = document.getElementById('today-tasks');
+  if (tasks.length === 0) {
+    el.innerHTML = '<div class="empty-msg">No tasks yet — add something to build today 🔨</div>';
+    return;
+  }
+  el.innerHTML = '';
+  tasks.forEach((t, i) => {
+    const row = document.createElement('div');
+    row.className = 'task-row' + (t.done ? ' done' : '');
+    row.innerHTML = `
+      <div class="task-cb" onclick="toggleTask(${i})"
+           style="${t.done ? 'background:var(--accent); border-color:var(--accent)' : ''}">
+        ${t.done ? '✓' : ''}
+      </div>
+      <span class="task-txt" onclick="toggleTask(${i})">${t.text}</span>
+      <button class="del-btn" onclick="deleteTask(${i})">×</button>
+    `;
+    el.appendChild(row);
+  });
+}
+
+function addTask() {
+  const inp = document.getElementById('task-input');
+  const text = inp.value.trim();
+  if (!text) return;
+  todayTasks().push({ id: Date.now(), text, done: false });
+  inp.value = '';
+  save(); renderTasks();
+}
+
+function toggleTask(i) {
+  todayTasks()[i].done = !todayTasks()[i].done;
+  save(); renderTasks();
+}
+
+function deleteTask(i) {
+  todayTasks().splice(i, 1);
+  save(); renderTasks();
+}
+
+function clearDoneTasks() {
+  S.tasks[today()] = todayTasks().filter(t => !t.done);
+  save(); renderTasks();
+}
+
+// ═══════════════════ TIMER ═══════════════════
+
+let timerInterval = null;
+let timerRunning = false;
+let timerSeconds = 25 * 60;
+const TIMER_MODES = [
+  { label: '25 min focus session', secs: 25*60 },
+  { label: '50 min deep work', secs: 50*60 },
+  { label: '5 min break', secs: 5*60 },
+];
+let timerModeIdx = 0;
+
+function renderTimerUI() {
+  if (!S.timer || S.timer.date !== today()) {
+    S.timer = { sessions: 0, totalMins: 0, date: today() };
+  }
+  document.getElementById('session-count').textContent = S.timer.sessions;
+  document.getElementById('total-mins').textContent = S.timer.totalMins + ' min focused';
+  updateTimerDisplay();
+}
+
+function updateTimerDisplay() {
+  const m = String(Math.floor(timerSeconds / 60)).padStart(2,'0');
+  const s = String(timerSeconds % 60).padStart(2,'0');
+  document.getElementById('timer-display').textContent = `${m}:${s}`;
+}
+
+function timerToggle() {
+  if (timerRunning) {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    document.getElementById('timer-start-btn').textContent = '▶ Resume';
+  } else {
+    timerRunning = true;
+    document.getElementById('timer-start-btn').textContent = '⏸ Pause';
+    timerInterval = setInterval(() => {
+      timerSeconds--;
+      updateTimerDisplay();
+      if (timerSeconds <= 0) {
+        clearInterval(timerInterval);
+        timerRunning = false;
+        const mode = TIMER_MODES[timerModeIdx];
+        if (timerModeIdx === 0 || timerModeIdx === 1) {
+          S.timer.sessions++;
+          S.timer.totalMins += Math.round(mode.secs / 60);
+          save();
+        }
+        document.getElementById('session-count').textContent = S.timer.sessions;
+        document.getElementById('total-mins').textContent = S.timer.totalMins + ' min focused';
+        document.getElementById('timer-start-btn').textContent = '▶ Start';
+        timerSeconds = mode.secs;
+        updateTimerDisplay();
+        alert('✅ Session complete! Take a break.');
+      }
+    }, 1000);
+  }
+}
+
+function timerReset() {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  timerSeconds = TIMER_MODES[timerModeIdx].secs;
+  document.getElementById('timer-start-btn').textContent = '▶ Start';
+  updateTimerDisplay();
+}
+
+function timerSetMode() {
+  timerModeIdx = (timerModeIdx + 1) % TIMER_MODES.length;
+  const mode = TIMER_MODES[timerModeIdx];
+  timerReset();
+  document.getElementById('timer-session-label').textContent = mode.label;
+}
+
+// ═══════════════════ ROADMAP ═══════════════════
+
+function renderPhaseTabs() {
+  const tabs = document.getElementById('phase-tabs');
+  tabs.innerHTML = '';
+  PHASES.forEach((p, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'phase-tab' + (S.activePhase === i ? ' active' : '');
+    if (S.activePhase === i) btn.style.background = p.color;
+    btn.textContent = p.label + ' · ' + p.title;
+    btn.onclick = () => { S.activePhase = i; S.openTopic = null; save(); renderRoadmap(); };
+    tabs.appendChild(btn);
+  });
+}
+
+function renderPhaseHeader() {
+  const p = PHASES[S.activePhase];
+  const header = document.getElementById('phase-header');
+  header.style.background = `linear-gradient(135deg, ${p.color}22, ${p.color}0a)`;
+  header.style.border = `1px solid ${p.color}44`;
+  header.innerHTML = `<div class="phase-title" style="color:${p.color}">${p.title}</div><div class="phase-sub">${p.subtitle}</div>`;
+}
+
+function renderTopics() {
+  const p = PHASES[S.activePhase];
+  const list = document.getElementById('topics-list');
+  list.innerHTML = '';
+
+  p.topics.forEach((topic, ti) => {
+    const topicKey = `${p.id}-t${ti}`;
+    const isOpen = S.openTopic === topicKey;
+    const doneCount = topic.resources.filter((_, ri) => S.roadmap[`${topicKey}-r${ri}`]).length;
+    const allDone = doneCount === topic.resources.length;
+
+    const diffColors = { Beginner:'#22c55e', Intermediate:'#f97316', Advanced:'#ef4444', Foundation:'#6366f1', Creative:'#ec4899', Startup:'#eab308', Social:'#06b6d4', Technical:'#a855f7' };
+    const dc = diffColors[topic.difficulty] || '#6366f1';
+
+    const card = document.createElement('div');
+    card.className = 'topic-card' + (isOpen ? ' open' : '');
+    card.innerHTML = `
+      <div class="topic-header" onclick="toggleTopic('${topicKey}')">
+        <div class="topic-icon" style="${allDone ? `background:${p.color}; color:#fff` : ''}">${allDone ? '✓' : topic.icon}</div>
+        <div class="topic-info">
+          <div class="topic-tag" style="color:${p.color}">${topic.tag}</div>
+          <div class="topic-name">${topic.name}</div>
+        </div>
+        <div style="display:flex; flex-direction:column; align-items:flex-end; gap:6px">
+          <div class="topic-badge" style="background:${dc}22; color:${dc}">${topic.difficulty}</div>
+          <div style="font-size:11px; color:var(--muted)">${doneCount}/${topic.resources.length} ▼</div>
+        </div>
+      </div>
+      <div class="topic-body">
+        <div class="resource-list">
+          ${topic.resources.map((r, ri) => {
+            const rk = `${topicKey}-r${ri}`;
+            const done = S.roadmap[rk] || false;
+            const typeColors = { Video:'#6366f1', Course:'#06b6d4', Book:'#f97316', Project:'#22c55e', Task:'#ec4899', Practice:'#a855f7', Reading:'#eab308', Tool:'#14b8a6', Event:'#f43f5e', Community:'#84cc16', Optional:'#6b7280', Concept:'#8b5cf6', Strategy:'#fb923c', Docs:'#38bdf8', Rule:'#ef4444', Thinking:'#a78bfa', Research:'#34d399', Goal:'#fbbf24' };
+            const tc = typeColors[r.type] || '#6366f1';
+            return `
+              <div class="resource-item${done ? ' done' : ''}" onclick="toggleResource('${rk}')">
+                <div class="res-cb" style="${done ? `background:${p.color}; border-color:${p.color}` : ''}">
+                  ${done ? '✓' : ''}
+                </div>
+                <div class="res-content">
+                  <div class="res-name">${r.name}</div>
+                  <div class="res-detail">${r.detail}</div>
+                </div>
+                <div class="res-type" style="background:${tc}22; color:${tc}">${r.type}</div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+}
+
+function toggleTopic(key) {
+  S.openTopic = S.openTopic === key ? null : key;
+  save(); renderTopics();
+}
+
+function toggleResource(key) {
+  S.roadmap[key] = !S.roadmap[key];
+  save(); renderTopics();
+}
+
+function renderRoadmap() {
+  renderPhaseTabs();
+  renderPhaseHeader();
+  renderTopics();
+}
+
+// ═══════════════════ SKILLS ═══════════════════
+
+function renderSkills() {
+  const grid = document.getElementById('skills-grid');
+  grid.innerHTML = '';
+  SKILLS.forEach(sk => {
+    const val = S.skills[sk.id] || 0;
+    const card = document.createElement('div');
+    card.className = 'skill-card';
+    card.innerHTML = `
+      <div class="skill-top">
+        <div class="skill-name">${sk.name}</div>
+        <div class="skill-pct" style="color:${sk.color}">${val}%</div>
+      </div>
+      <div class="skill-bar-bg">
+        <div class="skill-bar-fill" style="width:${val}%; background:${sk.color}"></div>
+      </div>
+      <input type="range" min="0" max="100" value="${val}"
+             style="width:100%; margin-top:10px; accent-color:${sk.color}; cursor:pointer"
+             oninput="updateSkill('${sk.id}', this.value)">
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function updateSkill(id, val) {
+  S.skills[id] = parseInt(val);
+  save(); renderSkills();
+}
+
+// ═══════════════════ STATS ═══════════════════
+
+function renderStats() {
+  // Summary stats
+  const totalFocus = S.timer && S.timer.totalMins ? S.timer.totalMins : 0;
+  const totalSessions = S.timer && S.timer.sessions ? S.timer.sessions : 0;
+  const allTasks = Object.values(S.tasks).flat();
+  const doneTasks = allTasks.filter(t => t.done).length;
+  const totalResources = PHASES.reduce((a,p) => a + p.topics.reduce((b,t) => b + t.resources.length, 0), 0);
+  const doneResources = Object.values(S.roadmap).filter(Boolean).length;
+  const streak = calcStreak();
+
+  const grid = document.getElementById('stats-grid');
+  grid.innerHTML = `
+    <div class="stat-card"><div class="stat-num" style="color:var(--accent)">${totalFocus}</div><div class="stat-label">Minutes Focused</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--green)">${doneTasks}</div><div class="stat-label">Tasks Done</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--orange)">${streak}</div><div class="stat-label">Day Streak 🔥</div></div>
+  `;
+
+  // Roadmap progress
+  const rpCard = document.getElementById('roadmap-progress-card');
+  rpCard.innerHTML = PHASES.map(p => {
+    const total = p.topics.reduce((a,t) => a + t.resources.length, 0);
+    const done = p.topics.reduce((a,t,ti) => a + t.resources.filter((_,ri) => S.roadmap[`${p.id}-t${ti}-r${ri}`]).length, 0);
+    const pct = total > 0 ? Math.round(done/total*100) : 0;
+    return `
+      <div style="margin-bottom:12px">
+        <div style="display:flex; justify-content:space-between; margin-bottom:6px">
+          <span style="font-size:13px; font-weight:600; color:${p.color}">${p.title}</span>
+          <span style="font-size:13px; color:var(--muted)">${done}/${total} · ${pct}%</span>
+        </div>
+        <div class="skill-bar-bg">
+          <div class="skill-bar-fill" style="width:${pct}%; background:${p.color}"></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // Habit score
+  const hCard = document.getElementById('habit-score-card');
+  const last7 = [];
+  for (let i=6; i>=0; i--) {
+    const d = new Date(); d.setDate(d.getDate()-i);
+    const key = d.toISOString().slice(0,10);
+    const h = S.habits[key] || {};
+    const score = Object.values(h).filter(Boolean).length;
+    const days = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+    last7.push({ label: days[d.getDay()], score, max: HABITS.length });
+  }
+  hCard.innerHTML = `
+    <div style="display:flex; gap:6px; align-items:flex-end; height:70px; margin-bottom:8px">
+      ${last7.map(d => {
+        const pct = d.max > 0 ? (d.score/d.max) : 0;
+        const h = Math.max(4, Math.round(pct * 60));
+        const color = pct >= 0.8 ? '#22c55e' : pct >= 0.5 ? '#f97316' : '#374151';
+        return `<div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; justify-content:flex-end">
+          <div style="width:100%; height:${h}px; background:${color}; border-radius:4px; transition:height 0.4s"></div>
+          <div style="font-size:11px; color:var(--muted)">${d.label}</div>
+        </div>`;
+      }).join('')}
+    </div>
+    <div style="font-size:12px; color:var(--muted); text-align:center">Last 7 days habit completion</div>
+  `;
+}
+
+// ═══════════════════ RESET ═══════════════════
+
+function resetAll() {
+  if (confirm('Reset ALL data? This cannot be undone.')) {
+    S = { habits:{}, tasks:{}, roadmap:{}, skills:{}, timer:{sessions:0,totalMins:0,date:''}, activePhase:0, streak:0, lastActiveDate:'', openTopic:null };
+    save(); init();
+  }
+}
+
+// ═══════════════════ INIT ═══════════════════
+
+function init() {
+  load();
+  renderTracker();
+  renderRoadmap();
+}
+
+init();
+</script>
+</body>
+</html>
